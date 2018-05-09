@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothManager;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
+import android.renderscript.ScriptGroup;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     protected Button btFind, btConnect, btRead, btWrite;
     protected EditText edWrite;
     protected TextView txRead;
+    protected StringTok stSensorInput = new StringTok("");
 
     protected void showMsg(String str){
         Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
@@ -102,7 +104,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String str = bthService.getSerialInput();
-                txRead.setText(str);
+                stSensorInput.appendString(str);
+                txRead.setText(stSensorInput.toString());
             }
         });
 
