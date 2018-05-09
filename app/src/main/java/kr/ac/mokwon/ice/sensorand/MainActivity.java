@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     protected EditText edWrite;
     protected TextView txRead;
     protected StringTok stSensorInput = new StringTok("");
+    protected ArrayList<Double> arSensor0,arSensor1,arSensor2;
 
     protected void showMsg(String str){
         Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
@@ -120,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         Set<BluetoothDevice> setDevice = bthAdapter.getBondedDevices();
         if (setDevice != null){
             for(BluetoothDevice device : setDevice){
-                if (device.getName().equalsIgnoreCase(sBthName)){
+                if (device.getName().equalsIgnoreCase(sBthName)) {
                     bthReceiver.sAddress = device.getAddress();
                     showMsg("MAC address of" + sBthName + "is set.");
                 }
@@ -128,10 +130,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         bthService = new AceBluetoothSerialService(this,bthAdapter);
-        while (stSensorInput.hasLine()){
-            String sLine = stSensorInput.cutLine();
-            pasrseSensorLine(sLine);
-        }
+
+        arSensor0 = new ArrayList<Double>();
+        arSensor1 = new ArrayList<Double>();
+        arSensor2 = new ArrayList<Double>();
+
     }
 
     private void pasrseSensorLine(String sLine) {
@@ -143,7 +146,15 @@ public class MainActivity extends AppCompatActivity {
             stToken = stInput.getToken();       // Sensor value
             double sensorVal = stToken.toDouble();
             showMsg(String.format("%d: %g", nSensor, sensorVal));
+            saveSensorVal(nSensor, sensorVal);
         }
+
+    }
+
+    private void saveSensorVal(long nSensor, double sensorVal) {
+        if (nSensor == 0) arSensor0.add(sensorVal);
+        else if (nSensor == 1) arSensor1.add(sensorVal);
+        else if(nSensor == 2) arSensor2.add(sensorVal);
     }
 
     private void parseSensor(StringTok stSensorInput) {
